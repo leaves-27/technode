@@ -7,7 +7,7 @@ var port =  process.env.PORT || 3000;
 
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
-var session = require("express-sessioin");
+var session = require("express-session");
 var Controllers = require("./controllers");
 
 var signedCookieParse = cookieParser("technode");
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({
   extended:true
 }));
 app.use(cookieParser());
-app.user(session({
+app.use(session({
   secret:"technode",
   resve:true,
   saveUninitialized:false,
@@ -36,7 +36,7 @@ app.use(function(req,res){
 });
 
 app.get("/api/validate",function(req,res){
-  var userId = req.session.userId;
+  var _userId = req.session.userId;
   if (_userId) {
     Controllers.User.findUserById(_userId,function(err,user){
       if (err) {
@@ -88,7 +88,7 @@ app.get("/api/logout",function(req,res){
       });
     }else{
       res.json(200);
-      delete.req.session._userId;
+      delete req.session._userId;
     }
   });
 });
@@ -111,7 +111,7 @@ io.set("authorization",function(handshakeData,accept){
           accept(err.message,false);
         }else{
           handshakeData.session = session;
-          if (session._userId) {
+          if(session && session._userId) {
             accept(null,true);
           }else{
             accept("no login");
