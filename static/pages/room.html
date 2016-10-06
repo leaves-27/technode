@@ -1,11 +1,16 @@
 <div class="col-md-12">
   <div class="panel panel-default room">
-    <div class="panel-heading room-header">technode</div>
+    <div class="panel-heading room-header">{{room.name}}</div>
     <div class="panel-body room-content">
-      <div class="list-group message" auto-scroll-to-bottom>
+      <div class="list-group messages" auto-scroll-to-bottom>
         <div class="list-group-item message"
             ng-repeat="message in messages">
-          某某：{{message}}
+            <img ng-src="{{message.creator.avatarUrl}}"
+              title="{{message.creator.name}}"
+              class="img--rounded"
+            />
+          {{message.creator.name}} : {{message.content}}
+          <time am-time-ago="message.createAt"></time>
         </div>
       </div>
       <form class="message-creator"
@@ -18,6 +23,21 @@
           </textarea>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<div class="col-md-3">
+  <div class="panel panel-default user-list">
+    <div class="panel-heading user-list-header">
+      在线用户
+    </div>
+    <div class="panel-body user-list-content">
+      <div class="list-group users">
+        <div class="list-group-item user" ng-repeat="user in room.users">
+          <img src="{{user.avatarUrl}}" title="{{user.name}}" class="img-rounded" />
+          {{user.name}}
+        </div>
+      </div>
     </div>
   </div>
 </div>

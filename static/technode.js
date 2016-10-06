@@ -3,7 +3,8 @@
 //   alert("connected to technode!");
 // });
 
-var app = angular.module("technodeApp",["ngRoute"]).run(function($window,$rootScope,$http,$location){
+var app = angular.module("technodeApp",["ngRoute","angularMoment"]).run(function($window,$rootScope,$http,$location){
+  $window.moment.lang("zh-cn");
   $http({
     url:"/api/validate",
     method:"GET"
@@ -49,68 +50,5 @@ app.factory("socket",function($rootScope){
         });
       });
     }
-  }
-});
-
-app.controller("RoomCtrl",function($scope,socket){
-  $scope.message = [];
-  socket.emit("getAllMessage");
-
-  socket.on("allMessage",function(message){
-    $scope.message = message;
-  });
-
-  socket.on("messageAdded",function(message){
-    $scope.message.push(message);
-  });
-});
-
-app.controller("MessageCtrl",function($scope,socket){
-  $scope.newMessage = "";
-
-  $scope.createMessage = function(){
-    if ($scope.newMessage=="") {
-      return 
-    }
-    socket.emit("createMessage",$scope.newMessage);
-    $scope.newMessage = "";
-  }
-});
-
-app.directive("autoScrollToBottom",function(){
-  return {
-    link:function(scope,element,attrs){
-      scope.$watch(function(){
-        return element.children().length;
-      },function(){
-        element.animate({
-          scrollTop:element.prop("scrollHeight")
-        },1000);
-      });
-    }
-  }
-});
-
-app.directive("ctrlEnterBreakLine",function(){
-  return function(scope,element,attrs){
-    var ctrlDown = false;
-    element.bind("keydown",function(evt){
-      if (evt.which === 17) {
-        ctrlDown = true;
-        setTimeout(function(){
-          ctrlDown = false;
-        },1000);
-      }
-      if (evt.which === 13) {
-        if (ctrlDown) {
-          element.val(element.val() + "\n")
-        }else{
-          scope.$apply(function(){
-            scope.$eval(atts.ctrlEnterBreakLine);
-          });
-          evt.preventDefault();
-        }
-      }
-    })
   }
 });
